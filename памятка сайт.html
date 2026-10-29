@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Vitalis Predict — здоровье и аналитика</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3f7fa;
+      color: #203044;
+    }
+    header {
+      background: #155e75;
+      color: white;
+      padding: 24px;
+      text-align: center;
+    }
+    main {
+      max-width: 650px;
+      margin: 30px auto;
+      padding: 24px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 18px #19334a12;
+    }
+    label { display: block; margin-top: 16px; }
+    input, button {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 12px;
+      margin-top: 8px;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    input { border: 1px solid #b8c8d5; }
+    button {
+      border: 0;
+      background: #0e7490;
+      color: white;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    #result { margin-top: 20px; }
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #526477;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Vitalis Predict</h1>
+    <p>Аналитика здоровья и забота о данных</p>
+  </header>
+
+  <main>
+    <h2>Демо-анализ показателя</h2>
+    <p>
+      Введите условное значение для демонстрации.
+      Не указывайте личные медицинские данные.
+    </p>
+
+    <form id="healthForm">
+      <label for="metric">Название показателя</label>
+      <input id="metric" maxlength="60"
+             required autocomplete="off">
+
+      <label for="value">Числовое значение</label>
+      <input id="value" type="number"
+             min="0" max="100000" step="any" required>
+
+      <button type="submit">Показать результат</button>
+    </form>
+
+    <section id="result" aria-live="polite"></section>
+    <p>
+      Результат демонстрационный и не является
+      медицинским прогнозом или диагнозом.
+    </p>
+  </main>
+
+  <footer>
+    Vitalis Predict · Демонстрационный прототип
+  </footer>
+
+  <script>
+    const form = document.getElementById("healthForm");
+    const result = document.getElementById("result");
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const metric =
+        document.getElementById("metric").value.trim();
+      const value =
+        document.getElementById("value").valueAsNumber;
+
+      if (!metric || !Number.isFinite(value) ||
+          value < 0 || value > 100000) {
+        result.textContent =
+          "Проверьте введённые данные.";
+        return;
+      }
+
+      // textContent не интерпретирует ввод как HTML.
+      result.replaceChildren();
+
+      const heading = document.createElement("h3");
+      heading.textContent = "Результат демонстрации";
+
+      const paragraph = document.createElement("p");
+      paragraph.textContent =
+        metric + ": " + String(value);
+
+      result.append(heading, paragraph);
+    });
+  </script>
+</body>
+</html>
