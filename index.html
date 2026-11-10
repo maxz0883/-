@@ -1,316 +1,140 @@
 <!doctype html>
 <html lang="ru">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#0b0e13" />
-  <meta name="description" content="Vitalis Predict — прогнозная аналитика для здоровья с приватностью по умолчанию." />
-  <title>Vitalis Predict — данные под защитой</title>
-  <style>
-    :root {
-      --ink: #0b0e13;
-      --ink-2: #121720;
-      --ink-3: #1b222d;
-      --paper: #f4f7f2;
-      --muted: #a9b0bb;
-      --muted-dark: #5e6671;
-      --lime: #cbff4d;
-      --lime-soft: #e9ffb7;
-      --line: rgba(255,255,255,.12);
-      --line-dark: rgba(11,14,19,.12);
-      --radius-xl: 30px;
-      --radius-lg: 20px;
-      --shadow: 0 24px 70px rgba(9, 13, 18, .17);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body { margin: 0; color: var(--ink); background: var(--paper); font-size: 16px; line-height: 1.5; }
-    a { color: inherit; text-decoration: none; }
-    button { font: inherit; }
-    .shell { max-width: 1240px; margin: 0 auto; padding: 0 28px; }
-    .topbar { position: absolute; inset: 0 0 auto; z-index: 5; color: #fff; }
-    .nav { display: flex; align-items: center; justify-content: space-between; gap: 24px; height: 82px; }
-    .brand { display: inline-flex; align-items: center; gap: 11px; font-weight: 700; letter-spacing: -.03em; font-size: 20px; }
-    .brand-mark { display: grid; place-items: center; width: 33px; height: 33px; border-radius: 11px; color: var(--ink); background: var(--lime); font-size: 17px; font-weight: 900; }
-    .nav-links { display: flex; align-items: center; gap: 28px; color: #c9ced4; font-size: 14px; }
-    .nav-links a { transition: color .2s ease; }
-    .nav-links a:hover { color: var(--lime); }
-    .nav-actions { display: flex; align-items: center; gap: 14px; }
-    .nav-login { color: #dce0e4; font-size: 14px; }
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; border: 0; border-radius: 100px; padding: 13px 19px; cursor: pointer; font-weight: 700; transition: transform .2s ease, background .2s ease, color .2s ease, box-shadow .2s ease; }
-    .btn:hover { transform: translateY(-2px); }
-    .btn-lime { background: var(--lime); color: var(--ink); box-shadow: 0 8px 22px rgba(203,255,77,.18); }
-    .btn-lime:hover { background: #d8ff78; }
-    .btn-ghost { border: 1px solid rgba(255,255,255,.22); color: #fff; background: rgba(255,255,255,.05); }
-    .btn-ghost:hover { background: rgba(255,255,255,.1); }
-    .hero { position: relative; min-height: 780px; overflow: hidden; color: #fff; background: var(--ink); }
-    .hero::before { content: ""; position: absolute; width: 650px; height: 650px; right: -170px; top: -180px; border-radius: 50%; background: radial-gradient(circle, rgba(203,255,77,.18) 0, rgba(203,255,77,0) 68%); pointer-events: none; }
-    .hero::after { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.032) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.032) 1px, transparent 1px); background-size: 58px 58px; mask-image: linear-gradient(to bottom, black, transparent 78%); pointer-events: none; }
-    .hero-inner { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(400px, .95fr); align-items: center; gap: 62px; min-height: 780px; padding-top: 74px; }
-    .eyebrow { display: inline-flex; align-items: center; gap: 9px; margin-bottom: 22px; padding: 7px 11px; border: 1px solid rgba(203,255,77,.25); border-radius: 100px; color: var(--lime); background: rgba(203,255,77,.08); font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
-    .eyebrow-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 0 5px rgba(203,255,77,.1); }
-    h1 { max-width: 720px; margin: 0; font-size: clamp(52px, 6.3vw, 88px); line-height: .98; letter-spacing: -.07em; font-weight: 760; }
-    h1 em { color: var(--lime); font-style: normal; }
-    .hero-copy { max-width: 540px; margin: 28px 0 34px; color: #c2c8d0; font-size: 18px; line-height: 1.6; }
-    .hero-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-    .hero-note { display: flex; align-items: center; gap: 9px; margin-top: 22px; color: #858d98; font-size: 12px; }
-    .hero-note svg { color: var(--lime); }
-    .hero-visual { position: relative; min-height: 490px; }
-    .orbit { position: absolute; inset: 34px 12px 20px 0; border: 1px solid rgba(255,255,255,.12); border-radius: 50%; transform: rotate(-21deg); }
-    .orbit::after { content: ""; position: absolute; inset: 33px; border: 1px solid rgba(203,255,77,.22); border-radius: 50%; }
-    .orbit::before { content: ""; position: absolute; width: 11px; height: 11px; top: 26px; left: 28%; border-radius: 50%; background: var(--lime); box-shadow: 0 0 0 9px rgba(203,255,77,.08), 0 0 25px rgba(203,255,77,.65); }
-    .shield-card { position: absolute; left: 50%; top: 50%; z-index: 2; display: flex; flex-direction: column; justify-content: space-between; width: 282px; height: 338px; padding: 24px; border: 1px solid rgba(255,255,255,.16); border-radius: 28px; background: linear-gradient(145deg, rgba(37,46,57,.94), rgba(13,17,23,.94)); box-shadow: 0 35px 80px rgba(0,0,0,.35); transform: translate(-50%, -50%) rotate(5deg); }
-    .shield-card::before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(135deg, rgba(255,255,255,.09), transparent 42%); pointer-events: none; }
-    .shield-top { display: flex; justify-content: space-between; align-items: center; color: #aeb6c0; font-size: 12px; }
-    .live { display: flex; align-items: center; gap: 6px; color: var(--lime); }
-    .live span { width: 6px; height: 6px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 0 4px rgba(203,255,77,.13); }
-    .shield-icon { display: grid; place-items: center; width: 105px; height: 121px; margin: 17px auto 0; clip-path: polygon(50% 0%, 91% 16%, 84% 70%, 50% 100%, 16% 70%, 9% 16%); background: var(--lime); color: var(--ink); }
-    .shield-icon svg { width: 47px; height: 47px; }
-    .shield-title { margin: 19px 0 4px; font-size: 21px; font-weight: 750; letter-spacing: -.04em; }
-    .shield-subtitle { color: #8e98a4; font-size: 12px; }
-    .shield-stat { display: flex; align-items: end; justify-content: space-between; margin-top: 21px; padding-top: 17px; border-top: 1px solid rgba(255,255,255,.13); }
-    .shield-stat strong { font-size: 30px; line-height: 1; letter-spacing: -.06em; }
-    .shield-stat small { color: #8e98a4; font-size: 11px; }
-    .float-card { position: absolute; z-index: 3; padding: 15px 17px; border: 1px solid rgba(255,255,255,.14); border-radius: 16px; background: rgba(22,28,36,.86); box-shadow: 0 16px 40px rgba(0,0,0,.2); backdrop-filter: blur(12px); }
-    .float-card.one { top: 62px; right: 4px; width: 164px; }
-    .float-card.two { bottom: 44px; left: 8px; width: 186px; }
-    .float-label { display: flex; justify-content: space-between; color: #99a3af; font-size: 11px; }
-    .float-value { margin-top: 8px; color: #fff; font-size: 18px; font-weight: 720; }
-    .float-value span { color: var(--lime); font-size: 12px; font-weight: 600; }
-    .bar { height: 5px; margin-top: 11px; overflow: hidden; border-radius: 99px; background: rgba(255,255,255,.1); }
-    .bar i { display: block; height: 100%; border-radius: inherit; background: var(--lime); }
-    .bar.green i { width: 94%; }
-    .bar.blue i { width: 78%; background: #77c6ff; }
-    .trust-strip { position: relative; z-index: 2; margin-top: -47px; }
-    .trust-inner { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; overflow: hidden; border: 1px solid var(--line-dark); border-radius: 22px; background: var(--line-dark); box-shadow: var(--shadow); }
-    .trust-item { display: flex; align-items: center; gap: 13px; padding: 23px 25px; background: #fff; }
-    .trust-icon { display: grid; place-items: center; flex: 0 0 auto; width: 36px; height: 36px; border-radius: 11px; color: #263109; background: var(--lime-soft); }
-    .trust-item strong { display: block; font-size: 15px; letter-spacing: -.02em; }
-    .trust-item span { display: block; margin-top: 2px; color: var(--muted-dark); font-size: 12px; }
-    section { padding: 128px 0; }
-    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 40px; margin-bottom: 53px; }
-    .kicker { color: #78902c; font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
-    h2 { max-width: 660px; margin: 12px 0 0; font-size: clamp(37px, 4.3vw, 59px); line-height: 1.02; letter-spacing: -.06em; }
-    .section-lede { max-width: 355px; margin: 0 0 6px; color: var(--muted-dark); font-size: 15px; }
-    .feature-grid { display: grid; grid-template-columns: 1.15fr .85fr .85fr; gap: 16px; }
-    .feature-card { min-height: 308px; padding: 28px; border-radius: var(--radius-lg); background: #fff; box-shadow: 0 1px 0 var(--line-dark); }
-    .feature-card.accent { color: #fff; background: var(--ink); }
-    .feature-card.lime { background: var(--lime); }
-    .feature-icon { display: grid; place-items: center; width: 46px; height: 46px; margin-bottom: 80px; border-radius: 14px; background: #eff5e9; color: #496117; }
-    .accent .feature-icon { background: rgba(203,255,77,.13); color: var(--lime); }
-    .lime .feature-icon { background: rgba(11,14,19,.12); color: var(--ink); }
-    .feature-card h3 { margin: 0 0 9px; font-size: 22px; letter-spacing: -.04em; }
-    .feature-card p { max-width: 315px; margin: 0; color: var(--muted-dark); font-size: 14px; line-height: 1.6; }
-    .accent p { color: #a7b0bd; }
-    .architecture { color: #fff; background: var(--ink); }
-    .architecture .kicker { color: var(--lime); }
-    .architecture h2 { max-width: 730px; }
-    .architecture .section-lede { color: #9099a5; }
-    .arch-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 70px; align-items: center; }
-    .layers { display: grid; gap: 12px; }
-    .layer { position: relative; display: flex; align-items: center; gap: 18px; padding: 19px 20px; border: 1px solid var(--line); border-radius: 16px; background: rgba(255,255,255,.035); }
-    .layer::after { content: ""; position: absolute; right: 22px; width: 7px; height: 7px; border: 1px solid var(--lime); border-radius: 50%; box-shadow: 0 0 0 4px rgba(203,255,77,.09); }
-    .layer-icon { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 11px; background: rgba(203,255,77,.1); color: var(--lime); }
-    .layer strong { display: block; font-size: 15px; }
-    .layer span { display: block; margin-top: 2px; color: #8f98a4; font-size: 12px; }
-    .arch-card { position: relative; min-height: 430px; padding: 28px; overflow: hidden; border-radius: 25px; background: #171e27; }
-    .arch-card::before { content: ""; position: absolute; width: 330px; height: 330px; right: -110px; bottom: -130px; border: 1px solid rgba(203,255,77,.26); border-radius: 50%; box-shadow: 0 0 0 29px rgba(203,255,77,.035), 0 0 0 60px rgba(203,255,77,.025); }
-    .arch-card-top { display: flex; justify-content: space-between; align-items: center; color: #aeb7c3; font-size: 12px; }
-    .arch-tag { padding: 6px 10px; border-radius: 100px; color: var(--lime); background: rgba(203,255,77,.11); font-size: 11px; }
-    .signal { position: absolute; left: 28px; right: 28px; top: 114px; height: 140px; }
-    .signal svg { width: 100%; height: 100%; overflow: visible; }
-    .signal-line { fill: none; stroke: var(--lime); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 8px rgba(203,255,77,.25)); }
-    .signal-grid { fill: none; stroke: rgba(255,255,255,.08); stroke-width: 1; }
-    .arch-bottom { position: absolute; bottom: 29px; left: 28px; right: 28px; display: flex; align-items: end; justify-content: space-between; }
-    .arch-bottom strong { display: block; font-size: 39px; line-height: 1; letter-spacing: -.07em; }
-    .arch-bottom span { display: block; margin-top: 8px; color: #919ba7; font-size: 12px; }
-    .arch-pulse { display: flex; align-items: center; gap: 7px; color: var(--lime); font-size: 12px; }
-    .arch-pulse i { width: 7px; height: 7px; border-radius: 50%; background: var(--lime); animation: pulse 2s infinite; }
-    @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(203,255,77,.4); } 50% { box-shadow: 0 0 0 7px rgba(203,255,77,0); } }
-    .modes { background: #e9eee6; }
-    .mode-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
-    .mode-tab { padding: 10px 15px; border: 1px solid var(--line-dark); border-radius: 100px; color: var(--muted-dark); background: transparent; cursor: pointer; font-size: 13px; font-weight: 700; transition: all .2s ease; }
-    .mode-tab.active, .mode-tab:hover { color: var(--ink); border-color: var(--ink); background: #fff; }
-    .mode-panel { display: grid; grid-template-columns: .95fr 1.05fr; gap: 60px; align-items: center; padding: 43px; border-radius: 25px; background: #fff; }
-    .mode-panel h3 { margin: 0 0 12px; font-size: 31px; letter-spacing: -.05em; }
-    .mode-panel p { max-width: 440px; margin: 0; color: var(--muted-dark); line-height: 1.65; }
-    .mode-points { display: grid; gap: 13px; margin-top: 24px; padding: 0; list-style: none; }
-    .mode-points li { display: flex; align-items: center; gap: 10px; color: #323a43; font-size: 14px; }
-    .check { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; color: var(--ink); background: var(--lime); font-size: 13px; font-weight: 900; }
-    .mode-visual { position: relative; min-height: 250px; padding: 25px; border-radius: 18px; background: var(--ink); color: #fff; overflow: hidden; }
-    .mode-visual::before { content: ""; position: absolute; inset: -80px auto auto -80px; width: 260px; height: 260px; border: 1px solid rgba(203,255,77,.2); border-radius: 50%; box-shadow: 0 0 0 30px rgba(203,255,77,.04), 0 0 0 61px rgba(203,255,77,.03); }
-    .mode-visual-head { position: relative; display: flex; justify-content: space-between; color: #9ca6b1; font-size: 12px; }
-    .mode-visual-content { position: relative; display: flex; align-items: center; gap: 22px; margin-top: 39px; }
-    .avatar-stack { display: flex; }
-    .avatar { display: grid; place-items: center; width: 44px; height: 44px; margin-left: -8px; border: 3px solid var(--ink); border-radius: 50%; color: #1e270b; background: #d8e7a0; font-size: 12px; font-weight: 800; }
-    .avatar:first-child { margin-left: 0; background: #a9d5ef; }
-    .avatar:nth-child(3) { background: #f5ba8c; }
-    .mode-visual-note strong { display: block; font-size: 16px; }
-    .mode-visual-note span { display: block; margin-top: 3px; color: #8f99a4; font-size: 12px; }
-    .quote { padding: 125px 0 140px; }
-    .quote-box { display: grid; grid-template-columns: .8fr 1.2fr; gap: 55px; align-items: center; padding: 55px; border-radius: 28px; background: var(--lime); }
-    .quote-mark { color: rgba(11,14,19,.25); font-size: 100px; font-weight: 900; line-height: .5; }
-    .quote blockquote { margin: 0; font-size: clamp(26px, 3vw, 39px); line-height: 1.13; letter-spacing: -.05em; font-weight: 680; }
-    .quote cite { display: block; margin-top: 21px; color: #455112; font-size: 13px; font-style: normal; }
-    footer { padding: 33px 0 38px; color: #8f99a4; background: var(--ink); font-size: 12px; }
-    .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 25px; }
-    .footer-brand { color: #fff; }
-    .footer-links { display: flex; gap: 22px; }
-    .footer-links a:hover { color: var(--lime); }
-    @media (max-width: 930px) {
-      .nav-links { display: none; }
-      .hero-inner, .arch-layout, .mode-panel, .quote-box { grid-template-columns: 1fr; }
-      .hero-inner { padding-top: 122px; gap: 12px; }
-      .hero { min-height: auto; }
-      .hero-inner { min-height: auto; padding-bottom: 100px; }
-      .hero-visual { min-height: 480px; }
-      .section-head { display: block; }
-      .section-lede { margin-top: 20px; }
-      .feature-grid { grid-template-columns: 1fr 1fr; }
-      .feature-card:first-child { grid-column: span 2; }
-      .mode-panel { gap: 36px; }
-      .quote-box { gap: 18px; padding: 40px; }
-      .quote-mark { font-size: 70px; }
-    }
-    @media (max-width: 620px) {
-      .shell { padding: 0 18px; }
-      .nav { height: 70px; }
-      .nav-login { display: none; }
-      .nav-actions .btn { padding: 10px 14px; font-size: 13px; }
-      h1 { font-size: 53px; }
-      .hero-copy { font-size: 16px; }
-      .hero-visual { min-height: 410px; transform: scale(.9); transform-origin: left top; width: 111%; margin-bottom: -38px; }
-      section { padding: 87px 0; }
-      .trust-inner { grid-template-columns: 1fr 1fr; }
-      .trust-item { padding: 17px 14px; }
-      .trust-item strong { font-size: 13px; }
-      .trust-item span { font-size: 11px; }
-      .feature-grid { grid-template-columns: 1fr; }
-      .feature-card:first-child { grid-column: auto; }
-      .feature-card { min-height: 240px; }
-      .feature-icon { margin-bottom: 53px; }
-      .mode-tabs { overflow-x: auto; padding-bottom: 3px; }
-      .mode-tab { white-space: nowrap; }
-      .mode-panel { padding: 25px; }
-      .mode-visual { min-height: 230px; }
-      .quote { padding: 85px 0; }
-      .quote-box { padding: 30px; }
-      .footer-inner { align-items: start; flex-direction: column; }
-    }
-  </style>
-</head>
-<body>
-  <header class="topbar">
-    <div class="shell nav">
-      <a href="#top" class="brand"><span class="brand-mark">✦</span> Vitalis Predict</a>
-      <nav class="nav-links" aria-label="Основная навигация">
-        <a href="#security">Безопасность</a>
-        <a href="#architecture">Архитектура</a>
-        <a href="#modes">Режимы доступа</a>
-      </nav>
-      <div class="nav-actions">
-        <a class="nav-login" href="#contact">Войти</a>
-        <a class="btn btn-lime" href="#contact">Запросить демо <span aria-hidden="true">↗</span></a>
-      </div>
-    </div>
-  </header>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Простой блог о защите данных и цифровой приватности." />
+    <title>Данные под защитой — блог о цифровой приватности</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="site-header" aria-label="Основная навигация">
+        <a class="brand" href="#top" aria-label="Данные под защитой">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span>Данные под защитой</span>
+        </a>
+        <nav class="nav-links">
+          <a href="#posts">Посты</a>
+          <a href="#checklist">Чеклист</a>
+          <a class="nav-link-accent" href="#about">О блоге</a>
+        </nav>
+      </header>
 
-  <main id="top">
-    <section class="hero">
-      <div class="shell hero-inner">
-        <div>
-          <div class="eyebrow"><span class="eyebrow-dot"></span> Privacy-first health intelligence</div>
-          <h1>Данные под защитой.<br /><em>Решения</em> под контролем.</h1>
-          <p class="hero-copy">Vitalis Predict превращает медицинские данные в понятные прогнозы — сохраняя приватность пациента на каждом шаге.</p>
-          <div class="hero-actions">
-            <a class="btn btn-lime" href="#contact">Запустить пилот <span aria-hidden="true">→</span></a>
-            <a class="btn btn-ghost" href="#security">Как это работает <span aria-hidden="true">↓</span></a>
+      <main id="top">
+        <section class="hero" aria-labelledby="hero-title">
+          <div class="hero-copy">
+            <p class="eyebrow"><span class="eyebrow-dot"></span>Блог о цифровой приватности</p>
+            <h1 id="hero-title">Безопасность начинается с <em>простых привычек</em></h1>
+            <p class="hero-text">
+              Понятно рассказываем, как беречь аккаунты, устройства и личную информацию каждый день — без сложных терминов и лишней тревоги.
+            </p>
+            <a class="button button-primary" href="#posts">Читать посты <span aria-hidden="true">↓</span></a>
           </div>
-          <div class="hero-note"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 5 6v5c0 4.7 2.9 8.5 7 10 4.1-1.5 7-5.3 7-10V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg> Шифрование AES-256 · Доступ по ролям · Аудит действий</div>
-        </div>
-        <div class="hero-visual" aria-label="Визуализация защищённого профиля">
-          <div class="orbit"></div>
-          <div class="float-card one"><div class="float-label"><span>Защищено</span><span>сейчас</span></div><div class="float-value">12 840 <span>записей</span></div><div class="bar green"><i></i></div></div>
-          <div class="float-card two"><div class="float-label"><span>Риск-скоринг</span><span>обновлён</span></div><div class="float-value">−18% <span>за 30 дней</span></div><div class="bar blue"><i></i></div></div>
-          <div class="shield-card">
-            <div class="shield-top"><span>VITALIS / CORE</span><span class="live"><span></span> live</span></div>
-            <div>
-              <div class="shield-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3 5 6v5c0 4.7 2.9 8.5 7 10 4.1-1.5 7-5.3 7-10V6l-7-3Z"/><path d="m8.6 12 2.2 2.2 4.8-5"/></svg></div>
-              <div class="shield-title">Контур защищён</div>
-              <div class="shield-subtitle">Анонимизация активна · 0 нарушений</div>
+          <aside class="hero-note" aria-label="Новая заметка">
+            <div class="note-topline"><span class="note-label">Новая заметка</span><span class="note-date">05.11.2026</span></div>
+            <div class="note-icon" aria-hidden="true">
+              <svg viewBox="0 0 32 32" fill="none"><path d="M8 14.5V11a8 8 0 0 1 16 0v3.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><rect x="5.5" y="13.5" width="21" height="14" rx="3" stroke="currentColor" stroke-width="1.7"/><circle cx="16" cy="20.5" r="1.5" fill="currentColor"/><path d="M16 22v2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
             </div>
-            <div class="shield-stat"><div><strong>99.9%</strong><small> доступность</small></div><div><strong>24/7</strong><small> мониторинг</small></div></div>
-          </div>
-        </div>
-      </div>
-    </section>
+            <h2>Как проверить утечки данных за 10 минут</h2>
+            <p>Небольшой план действий, который поможет понять, какие аккаунты стоит защитить в первую очередь.</p>
+            <a href="#post-leaks" class="text-link">Открыть заметку <span aria-hidden="true">↗</span></a>
+          </aside>
+        </section>
 
-    <div class="shell trust-strip" id="security">
-      <div class="trust-inner">
-        <div class="trust-item"><div class="trust-icon">⌁</div><div><strong>Zero-trust</strong><span>Никому не доверяем по умолчанию</span></div></div>
-        <div class="trust-item"><div class="trust-icon">◈</div><div><strong>Privacy by design</strong><span>Приватность заложена в продукт</span></div></div>
-        <div class="trust-item"><div class="trust-icon">◌</div><div><strong>RU + EU ready</strong><span>152-ФЗ и GDPR совместимы</span></div></div>
-        <div class="trust-item"><div class="trust-icon">↯</div><div><strong>Human in the loop</strong><span>Решение всегда за специалистом</span></div></div>
-      </div>
+        <section class="principles" aria-label="Основные принципы">
+          <div><span class="principle-number">01</span><strong>Сначала база</strong><small>Пароли, обновления, резервные копии</small></div>
+          <div><span class="principle-number">02</span><strong>Потом детали</strong><small>Приватность, разрешения, устройства</small></div>
+          <div><span class="principle-number">03</span><strong>Регулярно</strong><small>Пять минут раз в месяц лучше аврала</small></div>
+        </section>
+
+        <section class="posts-section" id="posts" aria-labelledby="posts-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Свежие материалы</p>
+              <h2 id="posts-title">Посты о защите данных</h2>
+            </div>
+            <p class="post-count" id="post-count">5 материалов</p>
+          </div>
+
+          <div class="filters" role="group" aria-label="Фильтр постов">
+            <button class="filter-button is-active" data-filter="all">Все</button>
+            <button class="filter-button" data-filter="аккаунты">Аккаунты</button>
+            <button class="filter-button" data-filter="устройства">Устройства</button>
+            <button class="filter-button" data-filter="приватность">Приватность</button>
+          </div>
+
+          <div class="posts-grid" id="posts-grid">
+            <article class="post-card post-card-featured" data-category="аккаунты" id="post-leaks">
+              <div class="post-meta"><span class="post-tag">Аккаунты</span><span>6 минут чтения</span></div>
+              <h3>Как проверить утечки данных за 10 минут</h3>
+              <p>Что делать, если ваш email оказался в базе утечки, и как быстро закрыть самые уязвимые места.</p>
+              <div class="post-footer"><time datetime="2026-11-05">05 ноября 2026</time><button class="read-button" data-read>Читать <span aria-hidden="true">↗</span></button></div>
+              <div class="post-full"><p>Начните с важных аккаунтов: почты, банковских приложений и мессенджеров. Проверьте, не используется ли один пароль повторно, включите двухфакторную аутентификацию и завершите активные сессии на незнакомых устройствах.</p><p>Если сервис сообщает об утечке, смените пароль прямо на официальном сайте. Не переходите по ссылкам из подозрительных писем — откройте приложение или введите адрес вручную.</p></div>
+            </article>
+
+            <article class="post-card" data-category="устройства">
+              <div class="post-meta"><span class="post-tag">Устройства</span><span>4 минуты чтения</span></div>
+              <h3>Публичный Wi-Fi: что выключить до подключения</h3>
+              <p>Короткая настройка телефона, которая снижает риск перехвата данных в кафе, аэропорту или отеле.</p>
+              <div class="post-footer"><time datetime="2026-11-02">02 ноября 2026</time><button class="read-button" data-read>Читать <span aria-hidden="true">↗</span></button></div>
+              <div class="post-full"><p>Отключите автоматическое подключение к открытым сетям, не передавайте важные данные без необходимости и после выхода удалите сеть из списка сохранённых. Для рабочих задач используйте мобильную сеть или проверенный VPN.</p></div>
+            </article>
+
+            <article class="post-card" data-category="аккаунты">
+              <div class="post-meta"><span class="post-tag">Аккаунты</span><span>5 минут чтения</span></div>
+              <h3>Надёжный пароль без головной боли</h3>
+              <p>Почему парольная фраза лучше набора случайных символов и как хранить всё безопасно.</p>
+              <div class="post-footer"><time datetime="2026-10-28">28 октября 2026</time><button class="read-button" data-read>Читать <span aria-hidden="true">↗</span></button></div>
+              <div class="post-full"><p>Соберите длинную фразу из нескольких несвязанных слов или используйте менеджер паролей. Для каждого сервиса нужен отдельный пароль, даже если это кажется неудобным.</p></div>
+            </article>
+
+            <article class="post-card" data-category="приватность">
+              <div class="post-meta"><span class="post-tag">Приватность</span><span>7 минут чтения</span></div>
+              <h3>Разрешения приложений: что можно забрать назад</h3>
+              <p>Разбираемся, каким приложениям действительно нужны камера, микрофон, контакты и геолокация.</p>
+              <div class="post-footer"><time datetime="2026-10-22">22 октября 2026</time><button class="read-button" data-read>Читать <span aria-hidden="true">↗</span></button></div>
+              <div class="post-full"><p>Раз в несколько месяцев открывайте настройки приватности и пересматривайте доступы. Разрешение «только во время использования» обычно достаточно для карт, камеры и заметок с геометками.</p></div>
+            </article>
+
+            <article class="post-card" data-category="устройства">
+              <div class="post-meta"><span class="post-tag">Устройства</span><span>3 минуты чтения</span></div>
+              <h3>Резервная копия — спокойствие на случай сбоя</h3>
+              <p>Минимальная схема копирования фотографий и документов, которую легко настроить один раз.</p>
+              <div class="post-footer"><time datetime="2026-10-16">16 октября 2026</time><button class="read-button" data-read>Читать <span aria-hidden="true">↗</span></button></div>
+              <div class="post-full"><p>Оставьте автоматическую копию включённой и иногда проверяйте, что файлы действительно открываются. Для важных документов полезно иметь вторую копию на другом носителе или в другом облаке.</p></div>
+            </article>
+          </div>
+          <p class="empty-state" id="empty-state" hidden>В этой категории пока нет постов</p>
+        </section>
+
+        <section class="checklist-section" id="checklist" aria-labelledby="checklist-title">
+          <div class="checklist-copy">
+            <p class="eyebrow">Быстрый старт</p>
+            <h2 id="checklist-title">5 минут на настройку</h2>
+            <p>Пройди пункты один за другим — и базовая защита уже станет заметно крепче.</p>
+            <div class="progress-line"><span></span></div>
+            <span class="progress-label">0 из 4 выполнено</span>
+          </div>
+          <div class="check-items">
+            <label class="check-item"><input type="checkbox" /><span class="custom-check"></span><span><strong>Включить 2FA</strong><small>Для почты и соцсетей</small></span></label>
+            <label class="check-item"><input type="checkbox" /><span class="custom-check"></span><span><strong>Обновить устройства</strong><small>Телефон, ноутбук, браузер</small></span></label>
+            <label class="check-item"><input type="checkbox" /><span class="custom-check"></span><span><strong>Проверить активные сессии</strong><small>Завершить незнакомые</small></span></label>
+            <label class="check-item"><input type="checkbox" /><span class="custom-check"></span><span><strong>Сделать резервную копию</strong><small>Фотографии и документы</small></span></label>
+          </div>
+        </section>
+
+        <section class="about-section" id="about" aria-labelledby="about-title">
+          <div><p class="eyebrow">Зачем этот блог</p><h2 id="about-title">Без паники, только понятные шаги</h2></div>
+          <p>Цифровая безопасность — это не один сложный инструмент, а набор небольших решений. Здесь мы собираем их в короткие инструкции, которые можно применить сразу.</p>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <span>© 2026 Данные под защитой</span>
+        <span>Меньше риска — больше контроля</span>
+      </footer>
     </div>
-
-    <section>
-      <div class="shell">
-        <div class="section-head"><div><div class="kicker">Встроенная защита</div><h2>Безопасность, которую видно в каждом экране.</h2></div><p class="section-lede">Не прячем сложность за обещаниями. Показываем, как данные проходят через систему и где остаются под контролем.</p></div>
-        <div class="feature-grid">
-          <article class="feature-card accent"><div class="feature-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 5 6v5c0 4.7 2.9 8.5 7 10 4.1-1.5 7-5.3 7-10V6l-7-3Z"/><path d="M12 8v4l2.5 2.5"/></svg></div><h3>Один источник правды</h3><p>Собираем сигналы из клинических систем в единый защищённый контур. Команда видит только то, что нужно для работы.</p></article>
-          <article class="feature-card lime"><div class="feature-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5v14"/><circle cx="12" cy="12" r="9"/></svg></div><h3>Минимум данных</h3><p>Модели используют только необходимые признаки — без лишних персональных деталей.</p></article>
-          <article class="feature-card"><div class="feature-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5M4 19h16"/><path d="m7 15 3-4 3 2 4-6"/></svg></div><h3>Понятный прогноз</h3><p>Каждый скоринг сопровождается объяснением: что повлияло и какой шаг поможет снизить риск.</p></article>
-        </div>
-      </div>
-    </section>
-
-    <section class="architecture" id="architecture">
-      <div class="shell">
-        <div class="section-head"><div><div class="kicker">Архитектура доверия</div><h2>Данные движутся по слоям. Контроль остаётся у вас.</h2></div><p class="section-lede">Все действия логируются, доступы ограничиваются ролями, а чувствительные поля обезличиваются до анализа.</p></div>
-        <div class="arch-layout">
-          <div class="layers">
-            <div class="layer"><div class="layer-icon">⌘</div><div><strong>Источник данных</strong><span>МИС, лаборатории, устройства</span></div></div>
-            <div class="layer"><div class="layer-icon">◌</div><div><strong>Анонимизация</strong><span>Токены вместо персональных данных</span></div></div>
-            <div class="layer"><div class="layer-icon">⌁</div><div><strong>Прогнозная модель</strong><span>Проверяемый скоринг и объяснение</span></div></div>
-            <div class="layer"><div class="layer-icon">✓</div><div><strong>Действие специалиста</strong><span>Рекомендация, а не автопилот</span></div></div>
-          </div>
-          <div class="arch-card"><div class="arch-card-top"><span>Состояние контура</span><span class="arch-tag">Все системы в норме</span></div><div class="signal"><svg viewBox="0 0 500 140" preserveAspectRatio="none"><path class="signal-grid" d="M0 20H500M0 55H500M0 90H500M0 125H500M50 0V140M150 0V140M250 0V140M350 0V140M450 0V140"/><path class="signal-line" d="M0 102 C25 100 34 94 53 97 S79 101 95 82 S119 65 135 76 S162 102 181 92 S201 64 220 72 S246 83 262 58 S285 28 301 49 S324 81 343 76 S367 37 387 50 S411 84 430 77 S454 64 470 40 S490 27 500 22"/></svg></div><div class="arch-bottom"><div><strong>0.03%</strong><span>аномальных запросов за 30 дней</span></div><div class="arch-pulse"><i></i> мониторинг активен</div></div></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="modes" id="modes">
-      <div class="shell"><div class="section-head"><div><div class="kicker">Режимы доступа</div><h2>Один продукт — разные уровни видимости.</h2></div><p class="section-lede">Настройте рабочее пространство под роль: пациент, врач или команда клиники.</p></div>
-        <div class="mode-tabs" role="tablist"><button class="mode-tab active" data-mode="patient" role="tab">Пациент</button><button class="mode-tab" data-mode="doctor" role="tab">Врач</button><button class="mode-tab" data-mode="team" role="tab">Команда</button></div>
-        <div class="mode-panel"><div><h3 id="mode-title">Пациент видит главное</h3><p id="mode-description">Только свои данные, понятный прогноз и конкретные шаги. Без медицинского жаргона и лишней тревоги.</p><ul class="mode-points" id="mode-points"><li><span class="check">✓</span> Доступ к истории согласий</li><li><span class="check">✓</span> Можно отозвать доступ в один клик</li><li><span class="check">✓</span> Объяснение каждого прогноза</li></ul></div><div class="mode-visual"><div class="mode-visual-head"><span id="mode-label">PATIENT VIEW</span><span>доступ ограничен</span></div><div class="mode-visual-content"><div class="avatar-stack"><div class="avatar">АИ</div><div class="avatar">ВК</div><div class="avatar">МК</div></div><div class="mode-visual-note"><strong id="mode-note">Мои данные</strong><span id="mode-subnote">Вижу только то, что согласовано</span></div></div></div></div>
-      </div>
-    </section>
-
-    <section class="quote" id="contact"><div class="shell"><div class="quote-box"><div class="quote-mark">“</div><div><blockquote>Доверие пациента начинается с того, как вы обращаетесь с его данными.</blockquote><cite>— команда Vitalis Predict</cite><div style="margin-top:28px"><a class="btn" style="background:var(--ink);color:var(--lime)" href="mailto:hello@vitalis.predict">Обсудить пилот <span>↗</span></a></div></div></div></div></section>
-  </main>
-
-  <footer><div class="shell footer-inner"><a href="#top" class="brand footer-brand"><span class="brand-mark">✦</span> Vitalis Predict</a><div>© 2026 Vitalis Predict · Системы прогнозной аналитики</div><div class="footer-links"><a href="#security">Политика данных</a><a href="#contact">Контакты</a></div></div></footer>
-
-  <script>
-    const modes = {
-      patient: { title: 'Пациент видит главное', description: 'Только свои данные, понятный прогноз и конкретные шаги. Без медицинского жаргона и лишней тревоги.', points: ['Доступ к истории согласий', 'Можно отозвать доступ в один клик', 'Объяснение каждого прогноза'], label: 'PATIENT VIEW', note: 'Мои данные', subnote: 'Вижу только то, что согласовано' },
-      doctor: { title: 'Врач видит контекст', description: 'Полная клиническая картина в рамках роли: сигналы риска, история изменений и подсказки для следующего разговора.', points: ['Контекст без лишних персональных полей', 'Приоритеты для следующего визита', 'Аудит каждого обращения к данным'], label: 'CLINICIAN VIEW', note: 'Карточка пациента', subnote: 'Контекст собран для решения' },
-      team: { title: 'Команда видит систему', description: 'Агрегированные показатели для руководителей и аналитиков — без доступа к личности пациента.', points: ['Агрегация и обезличивание', 'Контроль аномалий по отделениям', 'Экспорт только в разрешённых форматах'], label: 'TEAM VIEW', note: 'Пульс клиники', subnote: 'Тренды без персональных данных' }
-    };
-    const tabs = document.querySelectorAll('.mode-tab');
-    tabs.forEach(tab => tab.addEventListener('click', () => {
-      tabs.forEach(item => item.classList.remove('active'));
-      tab.classList.add('active');
-      const data = modes[tab.dataset.mode];
-      document.querySelector('#mode-title').textContent = data.title;
-      document.querySelector('#mode-description').textContent = data.description;
-      document.querySelector('#mode-label').textContent = data.label;
-      document.querySelector('#mode-note').textContent = data.note;
-      document.querySelector('#mode-subnote').textContent = data.subnote;
-      document.querySelector('#mode-points').innerHTML = data.points.map(item => `<li><span class="check">✓</span> ${item}</li>`).join('');
-    }));
-  </script>
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>
